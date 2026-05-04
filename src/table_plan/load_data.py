@@ -11,7 +11,11 @@ class DataLoader:
         self.interactions_config = DF_CONFIGS["INTERACTIONS"]
 
 
-    def clean_data(self, df_path, col_names_map: dict, w_path: str | None = None, write_cleaned_csv: bool = False):
+    def clean_data(self, 
+                   df_path : str,
+                   col_names_map: dict,
+                   w_path: str | None = None,
+                   write_cleaned_csv: bool = False) -> pl.DataFrame:
 
         cols_to_keep = list(col_names_map.keys())
         df = pl.read_csv(df_path).select(cols_to_keep)    
@@ -24,7 +28,9 @@ class DataLoader:
 
         return df
     
-    def add_group_id(self, df: pl.DataFrame, select_on: str = "organisation"):
+    def add_group_id(self,
+                     df: pl.DataFrame,
+                     select_on: str = "organisation") -> pl.DataFrame:
 
         unique_orgs = df.select(select_on).unique().sort(select_on).with_row_index("group_id")
 
@@ -60,8 +66,7 @@ class DataLoader:
         return combined_df
     
     def load_interactions(self,
-                          combined_df: pl.DataFrame
-                          ):
+                          combined_df: pl.DataFrame) -> pl.DataFrame:
         
         interactions_df = self.clean_data(
             df_path = self.interactions_config["path"],
