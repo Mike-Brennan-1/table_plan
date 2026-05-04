@@ -1,0 +1,23 @@
+[project]
+name = "table-plan"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Mike Brennan",email = "mike.brennan91@icloud.com"}
+]
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "ortools (>=9.15.6755,<10.0.0)",
+    "polars (>=1.40.1,<2.0.0)",
+    "streamlit (>=1.57.0,<2.0.0)",
+    "scipy (>=1.17.1,<2.0.0)",
+    "scikit-learn (>=1.8.0,<2.0.0)"
+]
+
+[tool.poetry]
+packages = [{include = "table_plan", from = "src"}]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
