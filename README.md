@@ -29,7 +29,7 @@ This also initialises a virtual environment.
 pip install requirements.txt
 ```
 ## Launch the app
-Once you have installed dependencies, you are ready to launch the app. The frontend is built using [Streamlit](https://streamlit.io/), and defined in [`app.py`](src\table_plan\app.py). To launch the app, run the following in terminal.
+Once you have installed dependencies, you are ready to launch the app. The frontend is built using [Streamlit](https://streamlit.io/), and defined in [`app.py`](src/table_plan/app.py). To launch the app, run the following in terminal.
 **If you're using Poetry**
 ```bash
 poetry run streamlit run src\table_plan\app.py
