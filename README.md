@@ -23,8 +23,6 @@ poetry install
 ```
 This also initialises a virtual environment.
 ### Using pip
-- Wait for me to make one
-- Then run:
 ```bash
 pip install requirements.txt
 ```
