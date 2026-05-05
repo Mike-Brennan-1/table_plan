@@ -2,9 +2,8 @@ import polars as pl
 from scipy.sparse import csr_matrix
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import normalize
-from sklearn.metrics import log_loss, ndcg_score
+from sklearn.metrics import log_loss
 import numpy as np
-from data_config import ModelInput
 
 class Recommender:
     def __init__(self,
@@ -16,9 +15,7 @@ class Recommender:
 
     def make_sparse_matrix(
         self,
-        df: pl.DataFrame,
-        
-    ) -> tuple[csr_matrix, list, list]:
+        df: pl.DataFrame) -> tuple[csr_matrix, list, list]:
 
         delegates = (
             df.select(self.delegate_id_col_name)
@@ -52,8 +49,7 @@ class Recommender:
         return X, delegates, exhibitors
     
     def describe_matrix(self,
-                        matrix: csr_matrix
-                        ) -> str:
+                        matrix: csr_matrix) -> str:
         
         response = f"""Shape of matrix: {matrix.shape}
 
@@ -81,8 +77,7 @@ Total non-zero interactions: {matrix.nnz}"""
                 row_index_name: str = "delegates",
                 scale_factor: int = 10000,
                 to_polars: bool = False,
-                cast_to_int: bool = True,
-                sigmoid: bool = False
+                cast_to_int: bool = True
                 ) -> pl.DataFrame | np.ndarray:
          
         pred = matrix @ similarities
@@ -96,9 +91,6 @@ Total non-zero interactions: {matrix.nnz}"""
         if cast_to_int:
             pred = (pred * scale_factor).astype(int)
 
-        if sigmoid:
-            pred = 1 / (1 + np.exp(pred))
-
         cols = [str(c) for c in cols] # cols need to be cast to str to avoid Polars type error in schema = cols in next step
 
         if to_polars:
@@ -110,8 +102,7 @@ Total non-zero interactions: {matrix.nnz}"""
     
     def recommender_pipeline(
             self,
-            df : pl.DataFrame
-            ):
+            df : pl.DataFrame) -> pl.DataFrame:
         
         X, delegates, exhibitors = self.make_sparse_matrix(df)
 
@@ -134,8 +125,7 @@ class RecommenderEvaluator:
     def random_mask(
             self,
             X : csr_matrix,
-            split : float = 0.1
-    ):
+            split : float = 0.1) -> tuple[csr_matrix, list]:
 
         rows, cols = X.nonzero()
         non_zeros = list(zip(rows, cols))
@@ -151,35 +141,15 @@ class RecommenderEvaluator:
 
         return X, test_pairs
 
-    
-    
-    
-    
-    
-    
-    
     def calculate_log_loss(self,
                  y_true,
-                 y_pred):
+                 y_pred) -> float:
         
         return log_loss(y_true, y_pred, labels=[0,1])
     
-    def calculate_ndcg(self,
-                       y_true, 
-                       y_pred, 
-                       k: int = 5):
-        
-        y_true = np.asarray(y_true)
-        y_pred = np.asarray(y_pred)
-        
-        y_true = y_true.reshape(1, -1)
-        y_pred = y_pred.reshape(1, -1)
-
-        return ndcg_score(y_true, y_pred, k = k)
-    
     def evaluate(self,
                  df : pl.DataFrame,
-                 split: float = 0.1):
+                 split: float = 0.1) -> float:
         
         X, delegates, exhibitors = self.recommender.make_sparse_matrix(df)
 
@@ -207,33 +177,11 @@ class RecommenderEvaluator:
 
         return self.calculate_log_loss(y_true, y_pred)
     
-    def evaluate2(self, df: pl.DataFrame):
-
-        X, delegates, exhibitors = self.recommender.make_sparse_matrix(df)
-
-        X_train, test_pairs = self.random_mask(X)
-
-        sim = self.recommender.calculate_cosine_similarity(X_train)
-
-        pred = self.recommender.predict(
-            X_train,
-            sim,
-            delegates,
-            exhibitors,
-            to_polars=False,
-            sigmoid=False
-        )
-
-        y_true = X.toarray()   # full ground truth matrix
-        y_score = pred         # predicted scores matrix
-
-        return self.calculate_ndcg(y_true, y_score, k=3)
-    
     def evaluate_multiple(self,
                           df : pl.DataFrame,
                           n_runs : int = 20,
                           split : float = 0.1,
-                          verbose : bool = False):
+                          verbose : bool = False) -> tuple[dict, list] | dict:
         
         losses = []
 
@@ -252,9 +200,10 @@ class RecommenderEvaluator:
         else:
 
             return report
-    
 
-    def evaluate_solution(self, solution: pl.DataFrame, affinity_df: pl.DataFrame):
+    def evaluate_solution(self,
+                          solution: pl.DataFrame,
+                          affinity_df: pl.DataFrame) -> list[dict]:
 
         table_affinities = []
 
@@ -290,4 +239,3 @@ class RecommenderEvaluator:
             table_affinities.append({"table": table, "score": score})
 
         return pl.DataFrame(table_affinities)
-            
