@@ -22,7 +22,7 @@ This project uses [Poetry](https://python-poetry.org/) for dependency management
 poetry install
 ```
 This also initialises a virtual environment.
-### Using `requirements.txt`
+### Using pip
 - Wait for me to make one
 - Then run:
 ```bash
@@ -32,9 +32,9 @@ pip install requirements.txt
 Once you have installed dependencies, you are ready to launch the app. The frontend is built using [Streamlit](https://streamlit.io/), and defined in [`app.py`](src/table_plan/app.py). To launch the app, run the following in terminal.
 **If you're using Poetry**
 ```bash
-poetry run streamlit run src\table_plan\app.py
+poetry run streamlit run src/table_plan/app.py
 ```
-**Not using Poetry**
+**Using pip**
 ```bash
-streamlit run src\table_plan\app.py
+streamlit run src/table_plan/app.py
 ```
