@@ -36,3 +36,11 @@ poetry run streamlit run src/table_plan/app.py
 ```bash
 streamlit run src/table_plan/app.py
 ```
+
+# Datasets
+>The datasets used in this repo are dummy data. An LLM was used to generate names of organisaitons and individuals; any similarity to real-world people or entities is cooincidental.
+
+The project uses three datasets:
+- Delegates: guests at the conference
+- Exhibitors: companies who are sponsoring the conference and want to network with certain delegates
+- Interactions: QR scanning logs showing which delegates visited with exhibitors' stands
