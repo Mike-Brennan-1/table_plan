@@ -42,7 +42,7 @@ exhibitors_sit_together = st.sidebar.checkbox("Exhibitors must sit together", Tr
 max_companies = st.sidebar.slider("Maximum companies per table", 1, 5, 2)
 maximise_for_affinity = st.sidebar.checkbox("Use QR scanning data to group by interactions", True)
 
-run_model = st.sidebar.button("Run Seating Optimisation2")
+run_model = st.sidebar.button("Run Seating Optimisation")
 
 
 

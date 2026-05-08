@@ -1,34 +1,34 @@
 #EXAMPLE CONFIG
 
-DELEGATE_CONFIG = {"path" : "data\\delegates.csv",
+DELEGATE_CONFIG = {"path" : "src/table_plan/data/delegates.csv",
                       "col_map" :
                       {
-                          "School (Conference Register) (OptEd - Conference Register)" : "organisation",
-                          "First Name" : "First name",
-                          "Surname" : "Surname",
+                          "School Account (Conference Register)" : "organisation",
+                          "first_name" : "First name",
+                          "last_name" : "Surname",
                           "Job Title" : "Job Title",
                           "whole tables booked" : "whole tables booked"
                         },
                           "type" : "delegate"
                   }
                 
-EXHIBITOR_CONFIG = {"path" : "data\\exhibitors.csv",
+EXHIBITOR_CONFIG = {"path" : "src/table_plan/data/exhibitors.csv",
                       "col_map" :
                       {
-                          "Account" : "organisation",
-                          "Full name" : "First name",
-                          "(Do Not Modify) SPEX attendees" : "Surname",
+                          "company" : "organisation",
+                          "first_name" : "First name",
+                          "surname" : "Surname",
                           "Status Reason" : "Job Title",
                           "whole tables booked" : "whole tables booked"
                       },
                           "type" : "exhibitor"
                   }
 
-INTERACTIONS_CONFIG = {"path" : "data\\interactions.csv",
+INTERACTIONS_CONFIG = {"path" : "src/table_plan/data/interactions.csv",
                       "col_map" :
                       {
-                          "Account (Exhibitor) (SPEX attendees)" : "Company",
-                          "Account (Delegate) (OptEd - Conference Delegate)" : "School"
+                          "Company" : "Company",
+                          "school name" : "School"
                           }
                           }
     
