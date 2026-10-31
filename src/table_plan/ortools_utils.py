@@ -8,8 +8,8 @@ def make_table_list(
 
    Example usage:
 
-   ```my_list = make_tabe_list(3)
-   >> my_list = ["T1", "T2", "T3"]```
+   ```my_list = make_table_list(3)
+   >> my_list = ["T0", "T1", "T2"]```
    """
    table_list = [f"T{t}" for t in range(tables)]
    return table_list
