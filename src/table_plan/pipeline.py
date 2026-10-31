@@ -11,6 +11,9 @@ def interactions_from_df(df: pl.DataFrame) -> dict:
     """
     Converts recommender output into solver-friendly dict:
     (school, company) -> score
+
+    Company columns are str in the recommender output, so they're cast back
+    to int to match the solver's company group_ids.
     """
     interactions = {}
 
@@ -20,7 +23,7 @@ def interactions_from_df(df: pl.DataFrame) -> dict:
         school = row["delegates"]
 
         for col in company_cols:
-            interactions[(school, col)] = row[col]
+            interactions[(school, int(col))] = row[col]
 
     return interactions
 

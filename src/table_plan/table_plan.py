@@ -117,6 +117,23 @@ class SeatingSolver:
             for t in self.tables:
                 self.model.add(self.x[d, t] <= self.z[s, t])
 
+        # z[s, t] can only be on if at least one of the school's delegates is at t
+        for s in self.schools:
+            school_delegates = [d for d in self.delegates if self.delegate_school[d] == s]
+            for t in self.tables:
+                self.model.add(self.z[s, t] <= sum(self.x[d, t] for d in school_delegates))
+
+        # k[c, t] is on exactly when at least one of the company's exhibitors is at t
+        for e in self.exhibitors:
+            c = self.exhibitor_company[e]
+            for t in self.tables:
+                self.model.add(self.y[e, t] <= self.k[c, t])
+
+        for c in self.companies:
+            company_exhibitors = [e for e in self.exhibitors if self.exhibitor_company[e] == c]
+            for t in self.tables:
+                self.model.add(self.k[c, t] <= sum(self.y[e, t] for e in company_exhibitors))
+
         for t in self.tables:
             self.model.add(sum(self.k[c, t] for c in self.companies) <= self.config["max_companies"])
 
@@ -174,6 +191,11 @@ class SeatingSolver:
         )
 
     def maximise_objective(self):
+        """Maximise affinity while still penalising school spread.
+
+        CP-SAT keeps only the last objective set, so the spread term is folded in
+        here rather than relying on the earlier `minimise_spread` call.
+        """
         objective_components = []
 
         for (school, company), score in self.interactions.items():
@@ -184,7 +206,9 @@ class SeatingSolver:
                     score * self.q_sc[school, company, t]
                     )
             
-        self.model.maximize(sum(objective_components))
+        self.model.maximize(
+            sum(objective_components) - self.spread * self.spread_scale_factor
+        )
 
     def build_model(self):
         self.make_tables()
@@ -228,6 +252,8 @@ class SeatingSolver:
     def solve(self, data: dict):
         self.model = cp_model.CpModel()
         self.solver = cp_model.CpSolver()
+        # Affinity models rarely prove optimality quickly; return the best plan found
+        self.solver.parameters.max_time_in_seconds = self.config.get("time_limit_seconds", 60)
 
         self.load_input_data(data)
         self.build_model()

@@ -203,7 +203,7 @@ class RecommenderEvaluator:
 
     def evaluate_solution(self,
                           solution: pl.DataFrame,
-                          affinity_df: pl.DataFrame) -> list[dict]:
+                          affinity_df: pl.DataFrame) -> pl.DataFrame:
 
         table_affinities = []
 
@@ -228,9 +228,13 @@ class RecommenderEvaluator:
 
             for d in dels:
                 for e in exhibitors:
+                    company_col = str(e) # affinity_df company columns are str, see predict()
+                    if company_col not in affinity_df.columns:
+                        continue
+
                     val = (
                         affinity_df
-                        .filter((pl.col("delegates") == d)).select(e)
+                        .filter((pl.col("delegates") == d)).select(company_col)
                     )
 
                     if val.height > 0:
